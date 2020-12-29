@@ -12,7 +12,7 @@ import logging
 import subprocess  # nosec
 
 from tern.classes.notice import Notice
-from tern.classes.docker_image import DockerImage
+from tern.classes.docker_image import DockerImage, LayerNumberError
 from tern.utils import constants
 from tern.analyze import passthrough
 from tern.analyze.default.container import single_layer
@@ -40,6 +40,8 @@ def load_full_image(image_tag_string, load_until_layer=0):
         logger.warning('Error in loading image: %s', str(error))
         test_image.origins.add_notice_to_origins(
             failure_origin, Notice(str(error), 'error'))
+    except LayerNumberError as error:
+        logger.warning(error.message)
     return test_image
 
 
@@ -47,8 +49,8 @@ def default_analyze(image_obj, redo=False, driver=None):
     """ Steps to analyze a container image (we assume it is a DockerImage
     object for now)
     1. Analyze the first layer to get a baseline list of packages
-    3. Analyze subsequent layers
-    4. Return the final image with all metadata filled in
+    2. Analyze subsequent loaded layers
+    3. Return the final image with all metadata filled in
     Options:
         redo: do not use the cache; False by default
         driver: mount using the chosen driver;
