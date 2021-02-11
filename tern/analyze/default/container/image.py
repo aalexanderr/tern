@@ -12,7 +12,7 @@ import logging
 import subprocess  # nosec
 
 from tern.classes.notice import Notice
-from tern.classes.docker_image import DockerImage, LayerNumberError
+from tern.classes.docker_image import DockerImage
 from tern.utils import constants
 from tern.analyze import passthrough
 from tern.analyze.default.container import single_layer
@@ -25,7 +25,7 @@ logger = logging.getLogger(constants.logger_name)
 
 def load_full_image(image_tag_string, load_until_layer=0):
     '''Create image object from image name and tag and return the object.
-    Loads only as much layers as needed.'''
+    Loads only as many layers as needed.'''
     test_image = DockerImage(image_tag_string)
     failure_origin = formats.image_load_failure.format(
         testimage=test_image.repotag)
@@ -40,8 +40,6 @@ def load_full_image(image_tag_string, load_until_layer=0):
         logger.warning('Error in loading image: %s', str(error))
         test_image.origins.add_notice_to_origins(
             failure_origin, Notice(str(error), 'error'))
-    except LayerNumberError as error:
-        logger.warning(error.message)
     return test_image
 
 

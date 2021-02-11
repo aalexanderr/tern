@@ -139,6 +139,7 @@ class DockerImage(Image):
         directory"""
         if load_until_layer > 0:
             self._load_until_layer = load_until_layer
+        # else defaults to 0 - handles negative load_until_layer
         try:
             self._manifest = self.get_image_manifest()
             self.__repotags = self.get_image_repotags(self._manifest)
@@ -159,6 +160,10 @@ class DockerImage(Image):
                     self._layers.append(layer)
                 layer_count = layer_count + 1
             self._total_layers = layer_count
+            if self.load_until_layer > self.total_layers:
+                # turn off load_until_layer to analyze full image
+                # as user asked to analyze more layers than image has
+                self._load_until_layer = 0
             self.set_layer_created_by()
         except NameError as e:
             raise NameError(e)
@@ -167,20 +172,3 @@ class DockerImage(Image):
                 e.returncode, cmd=e.cmd, output=e.output, stderr=e.stderr)
         except IOError as e:
             raise IOError(e)
-        if self.load_until_layer > self.total_layers:
-            raise LayerNumberError(self.load_until_layer, self.total_layers)
-
-
-class LayerNumberError(Exception):
-    """Exception raised when user tries to load more layers than available.
-
-    Attributes:
-        until_layer -- amount of layers user asked to load
-        total_layers -- amount of layers avaliable in given image
-    """
-
-    def __init__(self, until_layer, total_layers):
-        self.until_layer = until_layer
-        self.total_layers = total_layers
-        self.message = (f'Given layer: {self.until_layer} exceeds total'
-                        + f' amount of layers: {self.total_layers} in image.')
