@@ -36,11 +36,14 @@ def print_full_report(image, print_inclusive):
     for header in headers:
         notes = notes + header + '\n\n'
 
-    for layer in image.layers:
+    for i, layer in enumerate(image.layers):
+        logger.critical(f'i {i} layer index: {layer.layer_index} load_until: {image.load_until_layer}')
         if image.load_until_layer != 0 and \
-           layer.layer_index is not image.load_until_layer and \
+           layer.layer_index < image.load_until_layer and \
            print_inclusive is False:
+            logger.critical("cont")
             continue
+        logger.critical("should run")
         if layer.import_image:
             notes = notes + print_full_report(layer.import_image, print_inclusive)
         else:
