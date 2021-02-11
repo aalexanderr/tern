@@ -85,8 +85,8 @@ def do_main(args):
                 if (not args.load_until_layer):
                     drun.execute_dockerfile(args)
                 else:
-                    logger.critical("Currently layer can only be used with"
-                                    " -i --docker-image")
+                    logger.critical("Currently --layer/-y can only be used with"
+                                    " --docker-image/-i")
                     sys.exit(1)
             elif args.docker_image:
                 # Check if the image string is a tarball
