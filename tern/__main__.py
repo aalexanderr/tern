@@ -163,7 +163,7 @@ def main():
                                nargs='?', type=int, default=0,
                                help="Layer number of the image to analyze."
                                " Base OS layer is 1. Can only be used with"
-                               " -i --docker-image analysis. No argument"
+                               " --docker-image/-i analysis. No argument"
                                " will scan Base OS layer only.")
     parser_report.add_argument('-li', '--layer-inclusive',
                                action='store_true', dest='print_inclusive',
