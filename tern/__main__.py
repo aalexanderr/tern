@@ -167,7 +167,7 @@ def main():
                                " will scan Base OS layer only.")
     parser_report.add_argument('-li', '--layer-inclusive',
                                action='store_true', dest='print_inclusive',
-                               help="Usable only with -l --layer parameter."
+                               help="Usable only with --layer/-y parameter."
                                " When used, report will include all"
                                " preceding layers info.")
     parser_report.add_argument('-x', '--extend', metavar='EXTENSION',
